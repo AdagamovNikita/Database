@@ -8,7 +8,7 @@ random.seed(time.time()) #I need it to set different colors for items in my data
 def init_db():
     try:
         conn = sqlite3.connect('store.db')
-        cursor = conn.cursor()
+        cursor= conn.cursor()
         cursor.executescript('''
             CREATE TABLE Product (
                 product_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -22,7 +22,7 @@ def init_db():
                 barcode_id TEXT PRIMARY KEY,
                 quantity INTEGER NOT NULL,
                 wholesale_price INTEGER NOT NULL, 
-                sale_price INTEGER NOT NULL,
+                sale_price  INTEGER NOT NULL,
                 FOREIGN KEY (product_PO_id) REFERENCES Product(product_id)
             );
             CREATE TABLE ProductAttribute (
@@ -35,7 +35,7 @@ def init_db():
             );
             CREATE TABLE PriceHistory (
                 barcode_PH_id TEXT,
-                price_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                price_id  INTEGER PRIMARY KEY AUTOINCREMENT,
                 old_price INTEGER NOT NULL,
                 new_price INTEGER NOT NULL,
                 change_date DATETIME NOT NULL,
@@ -43,9 +43,9 @@ def init_db():
             );
             CREATE TABLE ProductCategory (
                 category_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                category_name TEXT NOT NULL
+                category_name TEXT  NOT NULL
             );
-            CREATE TABLE Supplier (
+            CREATE  TABLE Supplier (
                 supplier_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 supplier_name TEXT NOT NULL,
                 phone_number TEXT,
@@ -60,7 +60,7 @@ def init_db():
             );
             CREATE TABLE Sale (
                 sale_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                sale_date DATETIME NOT NULL,
+                sale_date  DATETIME NOT NULL,
                 source_name TEXT,
                 code_S_id TEXT,
                 tax_rate INTEGER,
@@ -72,7 +72,7 @@ def init_db():
             CREATE TABLE PromoCode (
                 code_id TEXT PRIMARY KEY,
                 discount_percentage INTEGER NOT NULL,
-                valid_from DATE NOT NULL,
+                valid_from DATE  NOT NULL,
                 valid_to DATE NOT NULL
             );
             CREATE TABLE SaleItem (
@@ -82,7 +82,7 @@ def init_db():
                 quantity_sold INTEGER NOT NULL,
                 price_sold_without_vat INTEGER NOT NULL,
                 FOREIGN KEY (sale_SI_id) REFERENCES Sale(sale_id),
-                FOREIGN KEY (barcode_SI_id) REFERENCES ProductOption(barcode_id)
+                FOREIGN KEY  (barcode_SI_id) REFERENCES ProductOption(barcode_id)
             );
         ''')
 
@@ -111,7 +111,7 @@ def init_db():
 
 
         promo_codes = [
-            ('WELCOME10', 10, '2024-01-01', '2024-12-31')
+            ('WELCOME10', 10, '2024-01-01','2024-12-31')
         ]
         cursor.executemany('INSERT INTO PromoCode (code_id, discount_percentage, valid_from, valid_to) VALUES (?, ?, ?, ?)', promo_codes)
 
@@ -147,7 +147,7 @@ def init_db():
 
 
 #I also did not know about it before as well. lastrowid gives the ID of the last inserted row.
-        colors = ['Black', 'White', 'Silver', 'Blue', 'Red', 'Green']
+        colors = ['Black','White','Silver', 'Blue', 'Red','Green']
         for product in products_data:
             cursor.execute('''
                 INSERT INTO Product (model, category_P_id, brand_name)
@@ -155,7 +155,7 @@ def init_db():
             ''', (product[0], product[1], product[2]))
             product_id = cursor.lastrowid
             cursor.execute('''
-                INSERT INTO ProductOption (product_PO_id, barcode_id, quantity, wholesale_price, sale_price)
+                INSERT INTO ProductOption (product_PO_id,barcode_id, quantity, wholesale_price, sale_price)
                 VALUES (?, ?, ?, ?, ?)
             ''', (product_id, product[3], product[4], product[5], product[6]))
             random_color = random.choice(colors)
@@ -164,11 +164,11 @@ def init_db():
                 VALUES (?, ?, ?, ?)
             ''', (product[3], 1, 'Color', random_color))
             cursor.execute('''
-                INSERT INTO PriceHistory (barcode_PH_id, old_price, new_price, change_date)
+                INSERT INTO PriceHistory (barcode_PH_id, old_price, new_price,change_date)
                 VALUES (?, ?, ?, datetime('now'))
             ''', (product[3], product[5], product[6]))
             cursor.execute(''' 
-                INSERT INTO ProductSupplier (product_PS_id, supplier_PS_id)
+                INSERT INTO ProductSupplier (product_PS_id,supplier_PS_id)
                 VALUES (?, ?)
             ''', (product_id, random.randint(1, 5)))
 
@@ -197,34 +197,38 @@ def init_db():
 #here I just make a LOT of data to make graphs look good.
         sales = []
         current_date = datetime.now()
-        start_date = current_date - timedelta(days=365)
+        start_date = current_date - timedelta(days=365) #here chatgpt helped me a bit because I did not know about timedelta
         for i in range(500): 
-            random_days = random.randint(0, 365)
+            random_days = random.randint(0,365)
             sale_date = start_date + timedelta(days=random_days)
-            sale_source = random.choice(['Online', 'Store'])
+            sale_source= random.choice(['Online', 'Store'])
             promo_code = random.choice(['WELCOME10', None])
             sale_tax_rate = 20
             total_price_without_vat = random.randint(15000, 200000)
             vat_paid = total_price_without_vat * sale_tax_rate // 100
-            total_price_with_vat = total_price_without_vat + vat_paid
-            sales.append((sale_date, sale_source, promo_code, sale_tax_rate, total_price_without_vat, vat_paid, total_price_with_vat))
+            total_price_with_vat  = total_price_without_vat + vat_paid
+            sales.append((sale_date, sale_source, promo_code, sale_tax_rate, 
+                        total_price_without_vat, vat_paid, total_price_with_vat))
 
 
 
-        for sale in sales:
             cursor.execute('''
                 INSERT INTO Sale (sale_date, source_name, code_S_id, tax_rate,
                                 total_price_without_vat, vat_paid, total_price_with_vat)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
-            ''', sale)
+            ''', (sale_date, sale_source, promo_code, sale_tax_rate, 
+                total_price_without_vat, vat_paid, total_price_with_vat))
             sale_id = cursor.lastrowid
-            items_for_this_sale = random.sample(sale_items_data, random.randint(1, 4)) #here chatgpt helped me a lot because I did not know how to make it properly using random values.
-            for barcode, min_qty, max_qty, price in items_for_this_sale:
+            items_in_sale =  random.sample(sale_items_data, random.randint(1, 10))
+            for item in items_in_sale:
+                barcode = item[0]
+                quantity = random.randint(1, 10)  
+                price = item[3]
                 cursor.execute('''
                     INSERT INTO SaleItem (sale_SI_id, barcode_SI_id, quantity_sold, price_sold_without_vat)
                     VALUES (?, ?, ?, ?)
-                ''', (sale_id, barcode, random.randint(min_qty, max_qty), price)) #same
-        conn.commit()
+                ''', (sale_id,barcode,quantity,price))
+            conn.commit()
     except sqlite3.Error as e:
         print(f"SQLite error happened: {e}")
     except Exception as e:

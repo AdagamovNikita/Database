@@ -23,8 +23,8 @@ The second phase of the Database Project(CMPS244).
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/AdagamovNikita/Dashboard-DB_project-
-cd Dashboard-DB_project-
+git clone https://github.com/AdagamovNikita/Database.git
+cd Database
 ```
 
 2. Install dependencies:

@@ -20,12 +20,12 @@ def index():
     try:
         conn = get_db_connection()
         if not conn:
-            return jsonify({"Sorry, there is a server problem :("})
+            return jsonify({"error": "Sorry, there is a server problem :("})
         brands = conn.execute('SELECT DISTINCT brand_name FROM Product ORDER BY brand_name').fetchall()  
         return render_template('index.html', brands=brands)
     except Exception  as e:
         print(f"Error: {e}")
-        return jsonify({"Sorry, there is a server problem :("}) #I also did not know about it before but we need jsonify to convert data into json format for my website.
+        return jsonify({"error": "Sorry, there is a server problem :("}) #I also did not know about it before but we need jsonify to convert data into json format for my website.
     finally:
         if conn:
             conn.close()
@@ -40,7 +40,7 @@ def search_brand():
             return redirect(url_for('index')) #I know nothing about websites, so it was also new for me. It will redirect the user to the main page if the brand is empty.
         conn = get_db_connection()
         if not conn:
-            return jsonify({"Sorry, there is a server problem :("})
+            return jsonify({"error": "Sorry, there is a server problem :("})
         results = conn.execute('''
             SELECT
                 p.brand_name AS Brand,
@@ -75,7 +75,7 @@ def search_brand():
         return  render_template('search_results.html', results=results, brand=brand)
     except Exception as e:
         print(f"Error: {e}")
-        return jsonify({"Sorry, there is a server problem :("})
+        return jsonify({"error": "Sorry, there is a server problem :("})
     finally:
         if conn:
             conn.close()
@@ -87,7 +87,7 @@ def top_products():
     try:
         conn = get_db_connection()
         if not conn:
-            return jsonify({"Sorry, there  is a server problem :("})
+            return jsonify({"error": "Sorry, there  is a server problem :("})
         products = conn.execute('''
             SELECT 
                 p.brand_name AS Brand,
@@ -100,7 +100,7 @@ def top_products():
             JOIN 
                 Product p ON po.product_PO_id = p.product_id
             GROUP BY 
-                p.product_id, p.brand_name, p.model
+                p.product_id,p.brand_name, p.model
             ORDER BY 
                 TotalQuantitySold DESC
             LIMIT 5
@@ -120,7 +120,7 @@ def top_products():
         #if I am not miskaten, sqlite does not have a DECIMAL datatype, so I decided to store everything related to money in cents instead of euros and then divide by 100 for display.
     except Exception as e:
         print(f"Error: {e}")
-        return jsonify({"Sorry, there is a server problem :("})
+        return jsonify({"error": "Sorry, there is a server problem :("})
     finally:
         if conn:
             conn.close()
@@ -132,7 +132,7 @@ def top_categories():
     try:
         conn = get_db_connection()
         if not conn:
-            return jsonify({"Sorry, there is a server problem :("})
+            return jsonify({"error": "Sorry, there is a server problem :("})
         categories = conn.execute('''
             SELECT 
                 pc.category_name AS Category,
@@ -166,7 +166,7 @@ def top_categories():
         })
     except Exception  as e:
         print(f"Error: {e}")
-        return jsonify({"Sorry, there is a server problem :("})
+        return jsonify({"error": "Sorry, there is a server problem :("})
     finally:
         if conn:
             conn.close()
@@ -178,7 +178,7 @@ def product_details():
     try:
         conn = get_db_connection()
         if not conn:
-            return jsonify({"Sorry, there is a server problem :("})
+            return jsonify({"error": "Sorry, there is a server problem :("})
         products= conn.execute('''
             SELECT 
                 p.brand_name AS Brand,
@@ -207,7 +207,7 @@ def product_details():
         return jsonify([dict(row) for row in products]) 
     except Exception as e:
         print(f"Error: {e}")
-        return jsonify({"Sorry, there is a server problem :( "})
+        return jsonify({"error": "Sorry, there is a server problem :( "})
     finally:
         if conn:
             conn.close()
@@ -219,7 +219,7 @@ def category_details():
     try:
         conn =  get_db_connection()
         if not conn:
-            return jsonify({"Sorry, there is  a server problem :("})
+            return jsonify({"error": "Sorry, there is  a server problem :("})
         categories = conn.execute('''
             SELECT 
                 pc.category_name AS Category,
@@ -244,7 +244,7 @@ def category_details():
         return jsonify([dict(row) for row in categories])
     except Exception as e:
         print(f"Error: {e}")
-        return  jsonify({"Sorry, there is a server problem :("})
+        return  jsonify({"error": "Sorry, there is a server problem :("})
     finally:
         if conn:
             conn.close()
@@ -256,7 +256,7 @@ def get_chart_filters():
     try:
         conn = get_db_connection()
         if not conn:
-            return jsonify({"Sorry,  there is a server problem :("})
+            return jsonify({"error": "Sorry,  there is a server problem :("})
         categories = conn.execute('''
             SELECT category_id, category_name 
             FROM ProductCategory 
@@ -267,7 +267,7 @@ def get_chart_filters():
         })
     except Exception as e:
         print(f"Error: {e}")
-        return jsonify({"Sorry, there is a server problem :("})
+        return jsonify({"error": "Sorry, there is a server problem :("})
     finally:
         if  conn:
             conn.close()
@@ -283,7 +283,7 @@ def get_sales_data():
             return jsonify({"Category is required"})
         conn = get_db_connection()
         if not conn:
-            return jsonify({"Sorry, there is a server problem :("})
+            return jsonify({"error": "Sorry, there is a server problem :("})
         results = conn.execute('''
             SELECT 
                 s.sale_date AS SaleDate,
@@ -310,7 +310,7 @@ def get_sales_data():
         } for row  in results])
     except Exception as e:
         print(f"Error: {e}")
-        return jsonify({"Sorry, there is a server problem :( "})
+        return jsonify({"error": "Sorry, there is a server problem :( "})
     finally:
         if conn:
             conn.close()
