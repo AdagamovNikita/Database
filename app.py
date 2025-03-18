@@ -136,7 +136,7 @@ def top_categories():
         categories = conn.execute('''
             SELECT 
                 pc.category_name AS Category,
-                COUNT(DISTINCT p.product_id) AS NumberOfProducts,
+                COUNT(p.product_id) AS NumberOfProducts,
                 SUM(si.quantity_sold) AS TotalQuantitySold
             FROM 
                 ProductCategory pc
@@ -200,7 +200,7 @@ def product_details():
             JOIN 
                 Supplier s ON ps.supplier_PS_id = s.supplier_id
             GROUP BY 
-                p.product_id
+                p.product_id, p.brand_name, p.model, po.sale_price, po.wholesale_price, s.supplier_name, s.phone_number, s.address
             ORDER BY 
                 TotalQuantitySold DESC
         ''').fetchall()
@@ -223,7 +223,7 @@ def category_details():
         categories = conn.execute('''
             SELECT 
                 pc.category_name AS Category,
-                COUNT(DISTINCT p.product_id) AS NumberOfProducts,
+                COUNT(p.product_id) AS NumberOfProducts,
                 SUM(si.quantity_sold) AS TotalQuantitySold,
                 AVG(po.sale_price) AS AverageProductPrice,
                 MAX(po.sale_price) AS MaximumProductPrice,

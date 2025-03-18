@@ -284,7 +284,6 @@
             height: 100%;
             background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(5px);
-            animation: modalFadeIn 0.3s ease;
         }
 
         @keyframes modalFadeIn {
@@ -418,9 +417,6 @@
             color: #fff;
             font-size: 1.1rem;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             box-shadow: 
                 0 0 25px rgba(33, 150, 243, 0.2),
                 inset 0 0 20px rgba(33, 150, 243, 0.1);
@@ -450,10 +446,8 @@
         }
 
         .custom-select-trigger:hover {
-            transform: translateY(-2px) scale(1.02);
-            box-shadow: 
-                0 0 30px rgba(33, 150, 243, 0.4),
-                inset 0 0 25px rgba(33, 150, 243, 0.2);
+            transform: translateY(-1px);
+            box-shadow: 0 0 15px rgba(33, 150, 243, 0.3);
             border-color: rgba(33, 150, 243, 0.6);
         }
 
@@ -485,8 +479,6 @@
             border: 1px solid rgba(33, 150, 243, 0.4);
             border-radius: 20px;
             padding: 10px;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             box-shadow: 
                 0 0 30px rgba(33, 150, 243, 0.3),
                 inset 0 0 20px rgba(33, 150, 243, 0.1);
@@ -689,8 +681,6 @@
             border: 1px solid rgba(33, 150, 243, 0.4);
             border-radius: 20px;
             padding: 10px;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             box-shadow: 
                 0 0 30px rgba(33, 150, 243, 0.3),
                 inset 0 0 20px rgba(33, 150, 243, 0.1);
@@ -1006,30 +996,70 @@
             }
         }
 
-        /* Add FAB styles */
+        /* Minimalistic futuristic FAB button */
         .fab {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: var(--gradient-1);
-            color: #fff;
+            bottom: 20px;  /* Adjust as needed */
+            right: 20px;   /* Adjust as needed */
+            width: 50px;   /* Reduced width */
+            height: 35px;  /* Reduced height */
+            border-radius: 17.5px;  /* Adjusted to maintain shape */
+            background: #0b1c48;
+            color: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 16px;  /* Adjust font size if needed */
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 300;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: var(--neon-shadow);
-            border: none;
+            box-shadow: 0 0 20px rgba(33, 150, 243, 0.4);
+            border: 2px solid #2196f3;
             z-index: 9999;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .fab::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent 40%, rgba(33, 150, 243, 0.4) 100%);
+            z-index: -1;
+        }
+
+        .fab::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            bottom: 0;
+            left: 0;
+            background: #2196f3;
+            animation: scanLine 2s linear infinite;
+            z-index: -1;
         }
 
         .fab:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 25px rgba(33, 150, 243, 0.8);
+            transform: translateY(-3px);
+            box-shadow: 0 0 25px rgba(33, 150, 243, 0.6);
+            border-color: #4dabf5;
+        }
+
+        .fab:active {
+            transform: scale(0.95);
+        }
+
+        @keyframes scanLine {
+            0% {
+                transform: translateY(55px);
+            }
+            100% {
+                transform: translateY(-55px);
+            }
         }
 
         /* Add styles for the feature modal */
@@ -1058,6 +1088,54 @@
             box-shadow: var(--neon-shadow);
             color: #fff;
             text-align: center;
+        }
+
+        /* Style specifically for the search button */
+        .search-section button {
+            background: linear-gradient(165deg, 
+                rgba(11, 28, 72, 0.95), 
+                rgba(33, 150, 243, 0.2)
+            );
+            border: 1px solid rgba(33, 150, 243, 0.3);
+            border-radius: 25px;
+            padding: 0.8rem 2rem;
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 
+                0 0 25px rgba(33, 150, 243, 0.2),
+                inset 0 0 20px rgba(33, 150, 243, 0.1);
+            text-shadow: 0 0 10px rgba(33, 150, 243, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .search-section button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 0 15px rgba(33, 150, 243, 0.3);
+            border-color: rgba(33, 150, 243, 0.6);
+        }
+
+        .search-section button:before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(33, 150, 243, 0.1),
+                transparent
+            );
+            transform: rotate(45deg);
+            animation: shimmer 3s linear infinite;
         }
     </style>
 </head>
@@ -1154,10 +1232,10 @@
                 <div class="filters">
                     <form class="chart-filters-form">
                         <div class="custom-select-container">
-                            <div class="custom-select-trigger" id="category-trigger">Select Category</div>
+                            <div class="custom-select-trigger" id="category-trigger">Select a category</div>
                             <div class="custom-select-options" id="category-options"></div>
                             <select name="category" required style="display: none;">
-                                <option value="">Select Category</option>
+                                <option value="">Select a category</option>
                             </select>
                         </div>
                     </form>
@@ -1835,6 +1913,29 @@
                 }
             });
         });
+    </script>
+    <canvas id="faviconCanvas" width="32" height="32" style="display:none;"></canvas>
+    <script>
+        window.onload = function() {
+            const canvas = document.getElementById('faviconCanvas');
+            const ctx = canvas.getContext('2d');
+
+            // Draw a gradient circle
+            const gradient = ctx.createLinearGradient(0, 0, 32, 32);
+            gradient.addColorStop(0, '#2196f3');
+            gradient.addColorStop(1, '#0b1c48');
+            
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(16, 16, 16, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Convert canvas to data URL and set as favicon
+            const link = document.createElement('link');
+            link.rel = 'icon';
+            link.href = canvas.toDataURL('image/png');
+            document.head.appendChild(link);
+        };
     </script>
 </body>
 </html>
